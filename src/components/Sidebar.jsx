@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addClass } from '../redux/actions/classesActions';
 import {
   setMode,
@@ -13,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CodeIcon from '@mui/icons-material/Code';
-
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { exportDiagram } from '../utils/exportDiagram';
 import { importDiagram } from '../utils/importDiagram';
@@ -77,6 +78,14 @@ const useStyles = makeStyles((theme) => ({
     },
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
   },
+  logoutButton: {
+    backgroundColor: '#f44336',
+    color: '#FFFFFF',
+    marginTop: 'auto',
+    '&:hover': {
+      backgroundColor: '#d32f2f',
+    },
+  },
 }));
 
 
@@ -87,6 +96,7 @@ const Sidebar = () => {
   
   const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectedElementId = useSelector((state) => state.ui.selectedElementId);
   const mode = useSelector((state) => state.ui.mode);
   const relationshipTypes = ['Association', 'Inheritance', 'Aggregation', 'Composition'];
@@ -224,6 +234,10 @@ const Sidebar = () => {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/auth');
+  };
 
   
   return (
@@ -291,6 +305,15 @@ const Sidebar = () => {
         disabled={classesState.allIds.length === 0}
       >
         Generate Code
+      </Button>
+
+      <Button
+        variant="contained"
+        startIcon={<ExitToAppIcon />}
+        className={`${classes.button} ${classes.logoutButton}`}
+        onClick={handleLogout}
+      >
+        Logout
       </Button>
 
       {/* Hidden file input */}
