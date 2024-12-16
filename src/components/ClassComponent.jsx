@@ -32,53 +32,174 @@ import {
 } from '../redux/actions/classesActions';
 import { setSelectedElement } from '../redux/actions/uiActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   classCard: {
-    position: 'absolute',
-    width: '200px',
+    minWidth: 180,
+    maxWidth: 220,
+    background: 'linear-gradient(165deg, #ffffff 0%, #f0f7ff 100%)',
+    borderRadius: '12px',
+    boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
+    // border: '1px solid rgba(255, 255, 255, 0.18)',
+    // transition: 'all 0.2s ease',
+    backdropFilter: 'blur(8px)',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 12px 40px rgba(31, 38, 135, 0.25)',
+    },
     cursor: 'move',
-    userSelect: 'none',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-    borderRadius: '4px',
-  },
-  header: {
-    backgroundColor: '#424242', // Dark grey instead of blue
-    color: '#fff',
-    padding: '5px',
-    textAlign: 'center',
-    borderTopLeftRadius: '4px',
-    borderTopRightRadius: '4px',
-  },
-  body: {
-    padding: '5px',
-  },
-  section: {
-    borderTop: '1px solid #e0e0e0',
-    padding: '5px',
+    overflow: 'hidden',
   },
   selected: {
-    border: '2px solid #ff9800', // Orange border for selected state
+    border: '2px solid #6366f1',
+    boxShadow: '0 0 25px rgba(99, 102, 241, 0.3)',
+    background: 'linear-gradient(165deg, #ffffff 0%, #e0e7ff 100%)',
   },
-  addButton: {
-    marginTop: '5px',
+  header: {
+    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+    color: '#ffffff',
+    padding: theme.spacing(0.75),
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '0.9rem',
+    textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
+    position: 'relative',
+    overflow: 'hidden',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
+      animation: '$shimmer 2s infinite',
+    },
   },
-  formControl: {
-    minWidth: 120,
-    marginRight: '10px',
+  '@keyframes shimmer': {
+    '0%': {
+      transform: 'translateX(-100%)',
+    },
+    '100%': {
+      transform: 'translateX(100%)',
+    },
+  },
+  section: {
+    padding: theme.spacing(0.75),
+    position: 'relative',
+  },
+  attributesSection: {
+    background: 'linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%)',
+    borderBottom: '2px solid rgba(99, 102, 241, 0.1)',
+  },
+  methodsSection: {
+    background: 'linear-gradient(135deg, #f1f5ff 0%, #e8eeff 100%)',
+  },
+  listItem: {
+    padding: theme.spacing(0.5),
+    margin: theme.spacing(0.25, 0),
+    borderRadius: '6px',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(5px)',
+    border: '1px solid rgba(99, 102, 241, 0.1)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      transform: 'translateX(4px)',
+      boxShadow: '0 2px 6px rgba(99, 102, 241, 0.1)',
+    },
   },
   editContainer: {
     display: 'flex',
     flexDirection: 'column',
+    gap: theme.spacing(1.5),
+    padding: theme.spacing(2),
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
   },
-  listItem: {
-    paddingLeft: '0',
-    paddingRight: '0',
+  formControl: {
+    minWidth: 120,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '12px',
+      '&:hover fieldset': {
+        borderColor: '#6366f1',
+      },
+    },
   },
   iconButton: {
-    padding: '4px',
+    padding: 4,
+    borderRadius: '8px',
+    transition: 'all 0.3s ease',
+    color: '#6366f1',
+    '& .MuiSvgIcon-root': {
+      fontSize: '0.9rem',
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(99, 102, 241, 0.1)',
+      transform: 'rotate(90deg)',
+    },
   },
-});
+  attributeText: {
+    fontFamily: '"JetBrains Mono", monospace',
+    fontSize: '0.75rem',
+    color: '#1e293b',
+    letterSpacing: '0.3px',
+  },
+  methodText: {
+    fontFamily: '"JetBrains Mono", monospace',
+    fontSize: '0.75rem',
+    color: '#1e293b',
+    letterSpacing: '0.3px',
+  },
+  visibilitySymbol: {
+    fontWeight: 'bold',
+    marginRight: theme.spacing(0.5),
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '16px',
+    height: '16px',
+    borderRadius: '4px',
+    fontSize: '10px',
+    // background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+    color: 'black',
+    // boxShadow: '0 1px 3px rgba(99, 102, 241, 0.3)',
+  },
+  sectionDivider: {
+    position: 'relative',
+    height: '1px',
+    background: 'linear-gradient(to right, transparent, #6366f1, transparent)',
+    margin: theme.spacing(1, 0),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.5,
+  },
+  sectionLabel: {
+    position: 'absolute',
+    padding: '1px 8px',
+    color: '#4f46e5',
+    fontSize: '0.65rem',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    backgroundColor: '#ffffff',
+    borderRadius: '10px',
+    boxShadow: '0 1px 4px rgba(99, 102, 241, 0.2)',
+    border: '1px solid #6366f1',
+    background: 'linear-gradient(135deg, #ffffff 0%, #f5f7ff 100%)',
+  },
+  addButton: {
+    position: 'absolute',
+    right: theme.spacing(2),
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: '#6366f1',
+    '&:hover': {
+      color: '#4f46e5',
+    },
+  },
+}));
 
 const visibilityOptions = ['public', 'private', 'protected'];
 const typeOptions = ['int', 'String', 'float', 'double', 'boolean', 'char', 'long'];
@@ -208,7 +329,7 @@ const ClassComponent = ({ data, setIsDragging, onClick }) => {
         </div>
 
         <CardContent
-          className={classes.section}
+          className={`${classes.section} ${classes.attributesSection}`}
           onDoubleClick={(e) => handleAddAttribute(e)}
         >
           <List dense>
@@ -247,14 +368,12 @@ const ClassComponent = ({ data, setIsDragging, onClick }) => {
                     <FormControl className={classes.formControl}>
                       <InputLabel>Visibility</InputLabel>
                       <Select
-                        value={attributeEdits.visibility}
-                        onChange={(e) =>
-                          handleAttributeChange('visibility', e.target.value)
-                        }
+                        value={attributeEdits.visibility || ''}
+                        onChange={(e) => handleAttributeChange('visibility', e.target.value)}
                       >
-                        {visibilityOptions.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
+                        {visibilityOptions.map((visibility) => (
+                          <MenuItem key={visibility} value={visibility}>
+                            {visibility}
                           </MenuItem>
                         ))}
                       </Select>
@@ -270,8 +389,19 @@ const ClassComponent = ({ data, setIsDragging, onClick }) => {
                 ) : (
                   <>
                     <ListItemText
-                      primary={`${attribute.visibility === 'public' ? '+' : '-'
-                        } ${attribute.name}: ${attribute.type}`}
+                      className={classes.attributeText}
+                      primary={
+                        <span>
+                          <span className={classes.visibilitySymbol}>
+                            {attribute.visibility === 'public'
+                              ? '+'
+                              : attribute.visibility === 'protected'
+                              ? '#'
+                              : '-'}
+                          </span>
+                          {`${attribute.name}: ${attribute.type}`}
+                        </span>
+                      }
                     />
                     <ListItemSecondaryAction>
                       <IconButton
@@ -289,9 +419,13 @@ const ClassComponent = ({ data, setIsDragging, onClick }) => {
           </List>
         </CardContent>
 
+        <div className={classes.sectionDivider}>
+          <span className={classes.sectionLabel}>Methods</span>
+        </div>
+
         {/* Methods Section */}
         <CardContent
-          className={classes.section}
+          className={`${classes.section} ${classes.methodsSection}`}
           onDoubleClick={(e) => handleAddMethod(e)}
         >
           <List dense>
@@ -353,8 +487,19 @@ const ClassComponent = ({ data, setIsDragging, onClick }) => {
                 ) : (
                   <>
                     <ListItemText
-                      primary={`${method.visibility === 'public' ? '+' : '-'
-                        } ${method.name}(): ${method.returnType}`}
+                      className={classes.methodText}
+                      primary={
+                        <span>
+                          <span className={classes.visibilitySymbol}>
+                            {method.visibility === 'public'
+                              ? '+'
+                              : method.visibility === 'protected'
+                              ? '#'
+                              : '-'}
+                          </span>
+                          {`${method.name}(): ${method.returnType}`}
+                        </span>
+                      }
                     />
                     <ListItemSecondaryAction>
                       <IconButton
