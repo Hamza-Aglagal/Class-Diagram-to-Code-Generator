@@ -71,7 +71,7 @@ const Auth = () => {
       localStorage.setItem('user', JSON.stringify(data.user));
       
       // Redirect to editor page
-      navigate('/editor');
+      navigate('/');
     } catch (error) {
       setError(error.message);
     }

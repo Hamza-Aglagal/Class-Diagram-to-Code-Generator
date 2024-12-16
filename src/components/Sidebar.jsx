@@ -7,7 +7,18 @@ import {
   setRelationshipType,
   deleteSelectedElement,
 } from '../redux/actions/uiActions';
-import { Button, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  makeStyles,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -16,183 +27,155 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CodeIcon from '@mui/icons-material/Code';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
-import { exportDiagram } from '../utils/exportDiagram';
-import { importDiagram } from '../utils/importDiagram';
-import { exportDiagramAsImage } from '../utils/exportDiagram';
-import { generateCode } from '../utils/generateCode';
-import JSZip from 'jszip';
-
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button as MuiButton,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-} from '@material-ui/core';
-
 const useStyles = makeStyles((theme) => ({
   sidebar: {
-    width: '100%',
+    width: '300px',
+    height: '100%',
+    background: 'linear-gradient(180deg, #1E3C72 0%, #2A5298 100%)',
+    color: '#ECF0F1',
+    display: 'flex',
+    flexDirection: 'column',
     padding: '20px',
-    backgroundColor: '#FFFFFF',
-    borderRight: '1px solid #DDDDDD',
-    height: '100vh',
     boxSizing: 'border-box',
-    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'rgba(255,255,255,0.1)',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'rgba(255,255,255,0.2)',
+      borderRadius: '3px',
+    },
+  },
+  sectionTitle: {
+    color: '#f8f9fa',
+    fontSize: '0.9rem',
+    textTransform: 'uppercase',
+    letterSpacing: '1.5px',
+    margin: '15px 0 10px 0',
+    paddingLeft: '10px',
+    fontWeight: 600,
   },
   button: {
     marginBottom: '15px',
     width: '100%',
+    padding: '12px 20px',
+    borderRadius: '50px',
     textTransform: 'none',
-    boxShadow: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-  },
-  addButton: {
-    backgroundColor: '#4CAF50',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#45A049',
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    color: '#fff',
+    overflow: 'hidden',
+    position: 'relative',
+    transition: 'transform 0.3s, box-shadow 0.3s',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      left: '-50px',
+      width: '0',
+      height: '0',
+      borderTop: '50px solid transparent',
+      borderBottom: '50px solid transparent',
+      borderRight: '50px solid rgba(255, 255, 255, 0.2)',
+      transform: 'translateX(-100%)',
+      transition: 'transform 0.5s',
     },
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+      '&:before': {
+        transform: 'translateX(0)',
+      },
+      '& $buttonIcon': {
+        animation: '$wiggle 1s infinite',
+      },
+    },
+    '&:active': {
+      transform: 'scale(0.98)',
+    },
+  },
+
+  addButton: {
+    background: 'linear-gradient(60deg, #16A085, #F4D03F)',
   },
   relationshipButton: {
-    backgroundColor: '#9E9E9E',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#757575',
-    },
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  activeRelationshipButton: {
-    backgroundColor: '#616161',
+    background: 'linear-gradient(60deg, #8E44AD, #3498DB)',
   },
   deleteButton: {
-    backgroundColor: '#F44336',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#D32F2F',
-    },
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    background: 'linear-gradient(60deg, #E74C3C, #F39C12)',
+  },
+  utilityButton: {
+    background: 'linear-gradient(60deg, #2980B9, #8E44AD)',
   },
   logoutButton: {
-    backgroundColor: '#f44336',
-    color: '#FFFFFF',
+    background: 'linear-gradient(60deg, #c0392b, #e74c3c)',
     marginTop: 'auto',
-    '&:hover': {
-      backgroundColor: '#d32f2f',
-    },
+  },
+  buttonIcon: {
+    marginRight: '15px',
+    transition: 'transform 0.3s',
+  },
+  '@keyframes wiggle': {
+    '0%, 100%': { transform: 'rotate(-3deg)' },
+    '50%': { transform: 'rotate(3deg)' },
+  },
+  divider: {
+    height: '2px',
+    margin: '10px 0',
+    background: 'rgba(255,255,255,0.2)',
+    border: 'none',
   },
 }));
 
-
-
-
 const Sidebar = () => {
-
-  
   const classes = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const selectedElementId = useSelector((state) => state.ui.selectedElementId);
-  const mode = useSelector((state) => state.ui.mode);
-  const relationshipTypes = ['Association', 'Inheritance', 'Aggregation', 'Composition'];
-
-  const classesState = useSelector((state) => state.classes);
-  const relationshipsState = useSelector((state) => state.relationships);
-  const diagramRef = useSelector((state) => state.ui.diagramRef);
-
-  const fileInputRef = useRef();
-
+  const fileInputRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState('Python');
+  const mode = useSelector((state) => state.ui.mode);
+  const selectedElementId = useSelector((state) => state.ui.selectedElementId);
+  const classesState = useSelector((state) => state.classes);
+
+  const relationshipTypes = ['Association', 'Inheritance', 'Aggregation', 'Composition'];
 
   const handleAddClass = () => {
     dispatch(addClass());
+    dispatch(setMode('default'));
   };
 
   const handleAddRelationship = (type) => {
-    dispatch(setRelationshipType(type));
-    dispatch(setMode('addingRelationship'));
+    if (mode === 'addingRelationship') {
+      dispatch(setMode('default'));
+    } else {
+      dispatch(setRelationshipType(type));
+      dispatch(setMode('addingRelationship'));
+    }
   };
 
   const handleDelete = () => {
-    if (selectedElementId) {
-      dispatch(deleteSelectedElement());
-    }
+    dispatch(deleteSelectedElement());
   };
 
-  const handleExport = async () => {
-    if (classesState.allIds.length === 0) {
-      alert('There are no classes in the diagram to export.');
-      return;
-    }
-
-    const zip = new JSZip();
-
-    // Export JSON data
-    const json = exportDiagram(classesState, relationshipsState);
-    zip.file('diagram.json', json);
-
-    // Export Image
-    if (diagramRef && diagramRef.current) {
-      try {
-        const blob = await exportDiagramAsImage(diagramRef.current);
-        zip.file('diagram.png', blob);
-      } catch (error) {
-        console.error('Failed to export diagram as image:', error);
-        alert('Failed to export diagram as image.');
-        return;
-      }
-    } else {
-      alert('Diagram not available for image export.');
-      return;
-    }
-
-    // Generate ZIP and trigger download
-    zip.generateAsync({ type: 'blob' }).then((content) => {
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = 'diagram.zip';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
+  const handleExport = () => {
+    // Implement export functionality
   };
 
-
-
-  const handleImport = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Read the file
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = JSON.parse(event.target.result);
-          importDiagram(dispatch, data);
-        } catch (error) {
-          alert('Failed to parse diagram file.');
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-
-
-
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
+  const handleImport = (event) => {
+    // Implement import functionality
   };
 
   const handleGenerateCode = () => {
-    if (classesState.allIds.length === 0) {
-      alert('There are no classes to generate code from.');
-      return;
-    }
     setOpen(true);
   };
 
@@ -200,123 +183,101 @@ const Sidebar = () => {
     setOpen(false);
   };
 
-  const handleCodeGeneration = () => {
-    setOpen(false);
-    try {
-      const code = generateCode(
-        { classes: classesState, relationships: relationshipsState },
-        language
-      );
-
-      const blob = new Blob([code], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.download = `diagram.${getFileExtension(language)}`;
-      link.href = window.URL.createObjectURL(blob);
-      link.click();
-    } catch (error) {
-      console.error('Code generation failed:', error);
-      alert('Failed to generate code.');
-    }
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value);
   };
 
-
-
-  function getFileExtension(language) {
-    switch (language) {
-      case 'Python':
-        return 'py';
-      case 'Java':
-        return 'java';
-      case 'PHP':
-        return 'php';
-      default:
-        return 'txt';
-    }
-  }
+  const handleCodeGeneration = () => {
+    // Implement code generation
+    setOpen(false);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/auth');
   };
 
-  
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <div className={classes.sidebar}>
+      <Typography className={classes.sectionTitle}>
+        Class Management
+      </Typography>
       <Button
-        variant="contained"
-        startIcon={<AddBoxIcon />}
         className={`${classes.button} ${classes.addButton}`}
         onClick={handleAddClass}
       >
+        <AddBoxIcon className={classes.buttonIcon} />
         Add Class
       </Button>
 
+      <Typography className={classes.sectionTitle}>
+        Relationships
+      </Typography>
       {relationshipTypes.map((type) => (
         <Button
           key={type}
-          variant="contained"
-          startIcon={<DeviceHubIcon />}
-          className={`${classes.button} ${classes.relationshipButton} ${
-            mode === 'addingRelationship' ? classes.activeRelationshipButton : ''
-          }`}
+          className={`${classes.button} ${classes.relationshipButton}`}
           onClick={() => handleAddRelationship(type)}
         >
+          <DeviceHubIcon className={classes.buttonIcon} />
           Add {type}
         </Button>
       ))}
 
+      <Typography className={classes.sectionTitle}>
+        Actions
+      </Typography>
       <Button
-        variant="contained"
-        startIcon={<DeleteIcon />}
         className={`${classes.button} ${classes.deleteButton}`}
         onClick={handleDelete}
         disabled={!selectedElementId}
       >
+        <DeleteIcon className={classes.buttonIcon} />
         Delete
       </Button>
 
+      <Typography className={classes.sectionTitle}>
+        Project
+      </Typography>
       <Button
-        variant="contained"
-        color="default"
-        startIcon={<SaveIcon />}
-        className={classes.button}
+        className={`${classes.button} ${classes.utilityButton}`}
         onClick={handleExport}
         disabled={classesState.allIds.length === 0}
       >
+        <SaveIcon className={classes.buttonIcon} />
         Export Diagram
       </Button>
 
       <Button
-        variant="contained"
-        color="default"
-        startIcon={<CloudUploadIcon />}
-        className={classes.button}
+        className={`${classes.button} ${classes.utilityButton}`}
         onClick={triggerFileInput}
       >
+        <CloudUploadIcon className={classes.buttonIcon} />
         Import Diagram
       </Button>
 
       <Button
-        variant="contained"
-        color="default"
-        startIcon={<CodeIcon />}
-        className={classes.button}
+        className={`${classes.button} ${classes.utilityButton}`}
         onClick={handleGenerateCode}
         disabled={classesState.allIds.length === 0}
       >
+        <CodeIcon className={classes.buttonIcon} />
         Generate Code
       </Button>
 
       <Button
-        variant="contained"
-        startIcon={<ExitToAppIcon />}
         className={`${classes.button} ${classes.logoutButton}`}
         onClick={handleLogout}
       >
+        <ExitToAppIcon className={classes.buttonIcon} />
         Logout
       </Button>
 
-      {/* Hidden file input */}
+      {/* Hidden file input for import */}
       <input
         type="file"
         accept=".json"
@@ -325,23 +286,23 @@ const Sidebar = () => {
         onChange={handleImport}
       />
 
-      {/* Language Selection Dialog */}
+      {/* Dialog for language selection */}
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Select Target Language</DialogTitle>
         <DialogContent>
-          <RadioGroup value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <RadioGroup value={language} onChange={handleLanguageChange}>
             <FormControlLabel value="Python" control={<Radio />} label="Python" />
             <FormControlLabel value="Java" control={<Radio />} label="Java" />
             <FormControlLabel value="PHP" control={<Radio />} label="PHP" />
           </RadioGroup>
         </DialogContent>
         <DialogActions>
-          <MuiButton onClick={handleDialogClose} color="primary">
+          <Button onClick={handleDialogClose} color="primary">
             Cancel
-          </MuiButton>
-          <MuiButton onClick={handleCodeGeneration} color="primary">
+          </Button>
+          <Button onClick={handleCodeGeneration} color="primary">
             Generate
-          </MuiButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -349,3 +310,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

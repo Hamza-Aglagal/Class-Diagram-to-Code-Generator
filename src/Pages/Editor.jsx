@@ -7,23 +7,33 @@ import CodeViewer from '../components/CodeViewer';
 const useStyles = makeStyles((theme) => ({
   editorPage: {
     display: 'flex',
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
+    position: 'fixed',
+    top: 0,
+    left: 0,
     margin: 0,
     padding: 0,
     overflow: 'hidden',
   },
   sidebar: {
-    width: '20%',
-    backgroundColor: '#2e2e3a',
-    color: '#ffffff',
-    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
+    width: '300px',
+    height: '100%',
+    flexShrink: 0,
+    position: 'relative',
   },
   diagramEditor: {
-    width: '80%',
+    flexGrow: 1,
+    height: '100%',
     backgroundColor: '#ffffff',
-    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.05)',
+    position: 'relative',
+    overflow: 'hidden',
   },
+  codeViewer: {
+    width: '300px',
+    height: '100%',
+    position: 'relative',
+  }
 }));
 
 const Editor = () => {
@@ -36,7 +46,7 @@ const Editor = () => {
       <div className={classes.diagramEditor}>
         <DiagramEditor />
       </div>
-      <div>
+      <div className={classes.codeViewer}>
         <CodeViewer />
       </div>
     </div>
