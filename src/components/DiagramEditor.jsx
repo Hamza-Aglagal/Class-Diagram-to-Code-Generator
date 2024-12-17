@@ -11,7 +11,7 @@ import {
   setDiagramRef,
 } from '../redux/actions/uiActions';
 import { addRelationship } from '../redux/actions/relationshipsActions';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, Tooltip } from '@material-ui/core';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import RestoreIcon from '@material-ui/icons/Restore';
@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   },
   zoomControls: {
     position: 'absolute',
-    bottom: '20px',
+    top: '20px',
     right: '20px',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: '8px',
@@ -56,6 +56,17 @@ const useStyles = makeStyles({
     gap: '8px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
     zIndex: 1000,
+  },
+  zoomButton: {
+    backgroundColor: '#fff',
+    '&:hover': {
+      backgroundColor: '#f5f5f5',
+    },
+  },
+  zoomText: {
+    marginLeft: '8px',
+    fontSize: '14px',
+    color: '#666',
   },
 });
 
@@ -69,6 +80,7 @@ const DiagramEditor = () => {
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [relationshipStartClassId, setRelationshipStartClassId] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(100);
 
   const classIds = useSelector((state) => state.classes.allIds);
   const classesById = useSelector((state) => state.classes.byId);
@@ -123,19 +135,23 @@ const DiagramEditor = () => {
     }
   };
 
-  const handleZoomIn = (transformComponent) => {
-    transformComponent.zoomIn(0.2);
-    setScale(transformComponent.state.scale);
+  const handleZoomIn = (zoomInFunc) => {
+    if (typeof zoomInFunc === 'function') {
+      zoomInFunc(0.2);
+    }
   };
 
-  const handleZoomOut = (transformComponent) => {
-    transformComponent.zoomOut(0.2);
-    setScale(transformComponent.state.scale);
+  const handleZoomOut = (zoomOutFunc) => {
+    if (typeof zoomOutFunc === 'function') {
+      zoomOutFunc(0.2);
+    }
   };
 
-  const handleReset = (transformComponent) => {
-    transformComponent.resetTransform();
-    setScale(1);
+  const handleReset = (resetFunc) => {
+    if (typeof resetFunc === 'function') {
+      resetFunc();
+      setScale(1);
+    }
   };
 
   return (
@@ -148,23 +164,47 @@ const DiagramEditor = () => {
         initialScale={1}
         minScale={0.1}
         maxScale={4}
-        onZoom={(ref) => setScale(ref.state.scale)}
+        onTransformed={({ state }) => {
+          setZoomLevel(Math.round(state.scale * 100));
+        }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
             <div className={classes.zoomControls}>
-              <IconButton onClick={() => handleZoomIn(zoomIn)}>
-                <ZoomInIcon />
-              </IconButton>
-              <IconButton onClick={() => handleZoomOut(zoomOut)}>
-                <ZoomOutIcon />
-              </IconButton>
-              <IconButton onClick={() => handleReset(resetTransform)}>
-                <RestoreIcon />
-              </IconButton>
-              <Typography variant="body2">
-                {Math.round(scale * 100)}%
-              </Typography>
+              <Tooltip title="Zoom In">
+                <IconButton 
+                  className={classes.zoomButton}
+                  onClick={() => {
+                    zoomIn();
+                  }}
+                >
+                  <ZoomInIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Zoom Out">
+                <IconButton 
+                  className={classes.zoomButton}
+                  onClick={() => {
+                    zoomOut();
+                  }}
+                >
+                  <ZoomOutIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Reset Zoom">
+                <IconButton 
+                  className={classes.zoomButton}
+                  onClick={() => {
+                    resetTransform();
+                    setZoomLevel(100);
+                  }}
+                >
+                  <RestoreIcon />
+                </IconButton>
+              </Tooltip>
+              <span className={classes.zoomText}>
+                {zoomLevel}%
+              </span>
             </div>
             <TransformComponent>
               <div className={classes.canvas}>

@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
   sidebar: {
     width: '300px',
     height: '100%',
-    background: 'linear-gradient(180deg, #1E3C72 0%, #2A5298 100%)',
-    color: '#ECF0F1',
+    background: 'linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%)',
+    color: '#ffffff',
     display: 'flex',
     flexDirection: 'column',
     padding: '20px',
@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     overflowY: 'auto',
     overflowX: 'hidden',
+    boxShadow: '2px 0 20px rgba(0, 0, 0, 0.2)',
     '&::-webkit-scrollbar': {
       width: '6px',
     },
@@ -50,24 +51,26 @@ const useStyles = makeStyles((theme) => ({
       background: 'rgba(255,255,255,0.1)',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: 'rgba(255,255,255,0.2)',
+      background: 'rgba(255,255,255,0.3)',
       borderRadius: '3px',
     },
   },
   sectionTitle: {
-    color: '#f8f9fa',
+    color: '#89c2d9',
     fontSize: '0.9rem',
     textTransform: 'uppercase',
-    letterSpacing: '1.5px',
-    margin: '15px 0 10px 0',
+    letterSpacing: '2px',
+    margin: '20px 0 15px 0',
     paddingLeft: '10px',
     fontWeight: 600,
+    borderLeft: '3px solid #a8dadc',
+    animation: '$slideInLeft 0.6s ease-out',
   },
   button: {
-    marginBottom: '15px',
+    marginBottom: '12px',
     width: '100%',
     padding: '12px 20px',
-    borderRadius: '50px',
+    borderRadius: '12px',
     textTransform: 'none',
     fontSize: '0.95rem',
     fontWeight: 500,
@@ -75,65 +78,92 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-start',
     color: '#fff',
-    overflow: 'hidden',
     position: 'relative',
-    transition: 'transform 0.3s, box-shadow 0.3s',
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      left: '-50px',
-      width: '0',
-      height: '0',
-      borderTop: '50px solid transparent',
-      borderBottom: '50px solid transparent',
-      borderRight: '50px solid rgba(255, 255, 255, 0.2)',
-      transform: 'translateX(-100%)',
-      transition: 'transform 0.5s',
-    },
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
     '&:hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-      '&:before': {
-        transform: 'translateX(0)',
-      },
+      transform: 'scale(1.03) translateX(5px)',
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
       '& $buttonIcon': {
-        animation: '$wiggle 1s infinite',
+        animation: '$rotate 0.5s ease-in-out',
+      },
+      '&::before': {
+        transform: 'scale(10)',
+        opacity: 0,
       },
     },
     '&:active': {
-      transform: 'scale(0.98)',
+      transform: 'scale(0.97)',
     },
-  },
-
-  addButton: {
-    background: 'linear-gradient(60deg, #16A085, #F4D03F)',
-  },
-  relationshipButton: {
-    background: 'linear-gradient(60deg, #8E44AD, #3498DB)',
-  },
-  deleteButton: {
-    background: 'linear-gradient(60deg, #E74C3C, #F39C12)',
-  },
-  utilityButton: {
-    background: 'linear-gradient(60deg, #2980B9, #8E44AD)',
-  },
-  logoutButton: {
-    background: 'linear-gradient(60deg, #c0392b, #e74c3c)',
-    marginTop: 'auto',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: '5px',
+      height: '5px',
+      borderRadius: '50%',
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+      transform: 'scale(1)',
+      opacity: 0,
+      transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    },
   },
   buttonIcon: {
     marginRight: '15px',
-    transition: 'transform 0.3s',
+    transform: 'scale(1.2)',
+    color: '#a8dadc',
   },
-  '@keyframes wiggle': {
-    '0%, 100%': { transform: 'rotate(-3deg)' },
-    '50%': { transform: 'rotate(3deg)' },
+  '@keyframes rotate': {
+    '0%': { transform: 'rotate(0deg)' },
+    '25%': { transform: 'rotate(-15deg) scale(1.2)' },
+    '75%': { transform: 'rotate(15deg) scale(1.2)' },
+    '100%': { transform: 'rotate(0deg)' },
   },
-  divider: {
-    height: '2px',
-    margin: '10px 0',
-    background: 'rgba(255,255,255,0.2)',
-    border: 'none',
+  '@keyframes slideInLeft': {
+    '0%': {
+      transform: 'translateX(-50px)',
+      opacity: 0,
+    },
+    '100%': {
+      transform: 'translateX(0)',
+      opacity: 1,
+    },
+  },
+  '@keyframes fadeInUp': {
+    '0%': {
+      transform: 'translateY(20px)',
+      opacity: 0,
+    },
+    '100%': {
+      transform: 'translateY(0)',
+      opacity: 1,
+    },
+  },
+  addButton: {
+    animation: '$fadeInUp 0.5s ease-out forwards',
+    animationDelay: '0.1s',
+  },
+  relationshipButton: {
+    animation: '$fadeInUp 0.5s ease-out forwards',
+    animationDelay: '0.2s',
+  },
+  deleteButton: {
+    animation: '$fadeInUp 0.5s ease-out forwards',
+    animationDelay: '0.3s',
+  },
+  utilityButton: {
+    animation: '$fadeInUp 0.5s ease-out forwards',
+    animationDelay: '0.4s',
+  },
+  logoutButton: {
+    marginTop: 'auto',
+    animation: '$fadeInUp 0.5s ease-out forwards',
+    animationDelay: '0.5s',
+    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
   },
 }));
 
@@ -317,4 +347,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
 
