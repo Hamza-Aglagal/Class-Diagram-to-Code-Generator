@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 import DiagramEditor from '../components/DiagramEditor';
-import { makeStyles } from '@material-ui/core';
 import CodeViewer from '../components/CodeViewer';
+import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   editorPage: {
@@ -38,6 +40,22 @@ const useStyles = makeStyles((theme) => ({
 
 const Editor = () => {
   const classes = useStyles();
+  const { sessionId } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Set the session ID in the Redux store
+    dispatch({ type: 'SET_SESSION_ID', payload: sessionId });
+
+    // Connect the socket
+    dispatch({ type: 'CONNECT_SOCKET' });
+
+    // Cleanup on unmount
+    return () => {
+      dispatch({ type: 'DISCONNECT_SOCKET' });
+    };
+  }, [dispatch, sessionId]);
+
   return (
     <div className={classes.editorPage}>
       <div className={classes.sidebar}>

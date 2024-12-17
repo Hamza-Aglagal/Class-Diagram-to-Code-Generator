@@ -7,6 +7,13 @@ router.post('/register', async (req, res) => {
   try {
     const { username, password, email } = req.body;
 
+    // Validate input
+    if (!username || !password || !email) {
+      return res.status(400).json({ 
+        message: 'All fields are required' 
+      });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ 
       $or: [{ username }, { email }] 
@@ -21,12 +28,13 @@ router.post('/register', async (req, res) => {
     // Create new user
     const user = new User({
       username,
-      password,
+      password, // In a real app, hash the password before saving
       email,
     });
 
     await user.save();
 
+    // Send success response
     res.status(201).json({ 
       message: 'User registered successfully',
       user: {
@@ -36,6 +44,7 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ 
       message: 'Error registering user',
       error: error.message 
@@ -47,23 +56,31 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ 
+        message: 'Username and password are required' 
+      });
+    }
 
     // Find user
     const user = await User.findOne({ username });
-
+    
     if (!user) {
       return res.status(401).json({ 
         message: 'Invalid username or password' 
       });
     }
 
-    // Check password
+    // Check password (in a real app, use bcrypt to compare hashed passwords)
     if (password !== user.password) {
       return res.status(401).json({ 
         message: 'Invalid username or password' 
       });
     }
 
+    // Send success response
     res.json({
       message: 'Login successful',
       user: {
@@ -73,8 +90,9 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ 
-      message: 'Error logging in',
+      message: 'Error during login',
       error: error.message 
     });
   }

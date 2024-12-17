@@ -134,7 +134,7 @@ const Auth = () => {
     setError('');
 
     try {
-      const endpoint = isLogin ? '/api/login' : '/api/register';
+      const endpoint = isLogin ? '/login' : '/register';
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: 'POST',
         headers: {
@@ -146,7 +146,7 @@ const Auth = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message);
+        throw new Error(data.message || 'Authentication failed');
       }
 
       // Store user data in localStorage
@@ -155,7 +155,8 @@ const Auth = () => {
       // Redirect to editor page
       navigate('/');
     } catch (error) {
-      setError(error.message);
+      console.error('Auth error:', error);
+      setError(error.message || 'An error occurred during authentication');
     }
   };
 

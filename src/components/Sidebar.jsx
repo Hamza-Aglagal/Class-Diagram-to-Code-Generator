@@ -26,6 +26,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CodeIcon from '@mui/icons-material/Code';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SessionInfo from './SessionInfo';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -203,9 +204,11 @@ const Sidebar = () => {
 
   return (
     <div className={classes.sidebar}>
+
       <Typography className={classes.sectionTitle}>
-        Class Management
+        Tools
       </Typography>
+
       <Button
         className={`${classes.button} ${classes.addButton}`}
         onClick={handleAddClass}
@@ -305,6 +308,10 @@ const Sidebar = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <SessionInfo />
+
+
     </div>
   );
 };

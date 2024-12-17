@@ -1,11 +1,19 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import {thunk} from 'redux-thunk';
-import classesReducer from './reducers/classesReducer';
-import relationshipsReducer from './reducers/relationshipsReducer';
-import uiReducer from './reducers/uiReducer';
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
+import socketMiddleware from './middleware/socketMiddleware';
 
-
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActionPaths: ['meta.remote'],
+        ignoredPaths: ['socket'],
+        warnAfter: 128,
+      },
+      immutableCheck: false,
+    }).concat(socketMiddleware()),
+  devTools: process.env.NODE_ENV !== 'production',
+});
 
 export default store;

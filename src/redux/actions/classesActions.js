@@ -1,5 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export const addClass = () => {
-  const id = Date.now().toString();
+  const id = uuidv4();
   return {
     type: 'ADD_CLASS',
     payload: {
@@ -12,110 +14,73 @@ export const addClass = () => {
   };
 };
 
+export const updateClassPosition = (id, x, y) => ({
+  type: 'UPDATE_CLASS_POSITION',
+  payload: { id, x, y },
+  meta: { sync: true }
+});
 
+export const updateClassName = (id, name) => ({
+  type: 'UPDATE_CLASS_NAME',
+  payload: { id, name },
+  meta: { sync: true }
+});
 
-export const updateClassPosition = (id, x, y) => {
-  return {
-    type: 'UPDATE_CLASS_POSITION',
-    payload: { id, x, y },
-  };
-};
+export const deleteClass = (id) => ({
+  type: 'DELETE_CLASS',
+  payload: { id },
+  meta: { sync: true }
+});
 
-export const updateClassName = (id, name) => {
-  return {
-    type: 'UPDATE_CLASS_NAME',
-    payload: { id, name },
-  };
-};
+export const addAttribute = (classId, attribute) => ({
+  type: 'ADD_ATTRIBUTE',
+  payload: {
+    classId,
+    attribute: {
+      id: Date.now().toString(),
+      ...attribute
+    }
+  },
+  meta: { sync: true }
+});
 
-export const deleteClass = (id) => {
-  return {
-    type: 'DELETE_CLASS',
-    payload: { id },
-  };
-};
+export const updateAttribute = (classId, attributeId, updates) => ({
+  type: 'UPDATE_ATTRIBUTE',
+  payload: { classId, attributeId, updates },
+  meta: { sync: true }
+});
 
+export const deleteAttribute = (classId, attributeId) => ({
+  type: 'DELETE_ATTRIBUTE',
+  payload: { classId, attributeId },
+  meta: { sync: true }
+});
 
+export const addMethod = (classId) => ({
+  type: 'ADD_METHOD',
+  payload: {
+    classId,
+    method: {
+      id: Date.now().toString(),
+      name: 'newMethod',
+      returnType: 'void',
+      visibility: 'public',
+      parameters: []
+    }
+  },
+  meta: { sync: true }
+});
 
-// Add Attribute
-export const addAttribute = (classId) => {
-  return {
-    type: 'ADD_ATTRIBUTE',
-    payload: {
-      classId,
-      attribute: {
-        id: Date.now().toString(),
-        name: 'attributeName',
-        type: 'int',
-        visibility: 'public',
-      },
-    },
-  };
-};
+export const updateMethod = (classId, methodId, updates) => ({
+  type: 'UPDATE_METHOD',
+  payload: { classId, methodId, updates },
+  meta: { sync: true }
+});
 
-// Update Attribute
-export const updateAttribute = (classId, attributeId, updates) => {
-  return {
-    type: 'UPDATE_ATTRIBUTE',
-    payload: {
-      classId,
-      attributeId,
-      updates,
-    },
-  };
-};
-
-// Delete Attribute
-export const deleteAttribute = (classId, attributeId) => {
-  return {
-    type: 'DELETE_ATTRIBUTE',
-    payload: {
-      classId,
-      attributeId,
-    },
-  };
-};
-
-
-
-// Add Method
-export const addMethod = (classId) => {
-  return {
-    type: 'ADD_METHOD',
-    payload: {
-      classId,
-      method: {
-        id: Date.now().toString(),
-        name: 'methodName',
-        returnType: 'void',
-        visibility: 'public',
-        parameters: [],
-      },
-    },
-  };
-};
-
-// Update Method
-export const updateMethod = (classId, methodId, updates) => {
-  return {
-    type: 'UPDATE_METHOD',
-    payload: {
-      classId,
-      methodId,
-      updates,
-    },
-  };
-};
-
-// Delete Method
-export const deleteMethod = (classId, methodId) => {
-  return {
-    type: 'DELETE_METHOD',
-    payload: {
-      classId,
-      methodId,
-    },
-  };
-};
+export const deleteMethod = (classId, methodId) => ({
+  type: 'DELETE_METHOD',
+  payload: { classId, methodId },
+  meta: { sync: true }
+});
 
 
