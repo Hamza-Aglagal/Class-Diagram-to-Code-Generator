@@ -18,25 +18,41 @@ import RestoreIcon from '@material-ui/icons/Restore';
 
 const useStyles = makeStyles({
   editor: {
-    flexGrow: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
+    height: '100vh',
     overflow: 'hidden',
     backgroundColor: '#f4f4f9',
+    margin: 0,
+    padding: 0,
+  },
+  content: {
+    marginLeft: '300px',
+    height: '100%',
+    margin: 0,
+    padding: 0,
   },
   canvas: {
-    width: '3000px',
-    height: '3000px',
+    width: '100%',
+    height: '100%',
     position: 'relative',
+    margin: 0,
+    padding: 0,
     backgroundImage:
       'linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)',
     backgroundSize: '20px 20px',
+    transformOrigin: '0 0',
   },
   relationshipsLayer: {
     position: 'absolute',
     top: 0,
     left: 0,
-    pointerEvents: 'none', 
-    zIndex: 2, 
+    pointerEvents: 'none',
+    zIndex: 2,
+    width: '100%',
+    height: '100%',
   },
   classesLayer: {
     position: 'absolute',
@@ -156,143 +172,154 @@ const DiagramEditor = () => {
 
   return (
     <div className={classes.editor} onClick={handleBackgroundClick} ref={diagramRef}>
-      <TransformWrapper
-        doubleClick={{ disabled: true }}
-        wheel={{ disabled: isDragging }}
-        pinch={{ disabled: isDragging }}
-        panning={{ disabled: isDragging }}
-        initialScale={1}
-        minScale={0.1}
-        maxScale={4}
-        onTransformed={({ state }) => {
-          setZoomLevel(Math.round(state.scale * 100));
-        }}
-      >
-        {({ zoomIn, zoomOut, resetTransform }) => (
-          <>
-            <div className={classes.zoomControls}>
-              <Tooltip title="Zoom In">
-                <IconButton 
-                  className={classes.zoomButton}
-                  onClick={() => {
-                    zoomIn();
-                  }}
-                >
-                  <ZoomInIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Zoom Out">
-                <IconButton 
-                  className={classes.zoomButton}
-                  onClick={() => {
-                    zoomOut();
-                  }}
-                >
-                  <ZoomOutIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Reset Zoom">
-                <IconButton 
-                  className={classes.zoomButton}
-                  onClick={() => {
-                    resetTransform();
-                    setZoomLevel(100);
-                  }}
-                >
-                  <RestoreIcon />
-                </IconButton>
-              </Tooltip>
-              <span className={classes.zoomText}>
-                {zoomLevel}%
-              </span>
-            </div>
-            <TransformComponent>
-              <div className={classes.canvas}>
-                <div className={classes.classesLayer}>
-                  {classIds.map((id) => (
-                    <ClassComponent
-                      key={id}
-                      data={classesById[id]}
-                      setIsDragging={setIsDragging}
-                      onClick={() => handleClassClick(id)}
-                    />
-                  ))}
-                </div>
-
-                
-                <svg
-                  className={classes.relationshipsLayer}
-                  width="3000"
-                  height="3000"
-                  overflow="visible" 
-                >
-                  <defs>
-                    
-                    <marker
-                      id="arrow"
-                      markerWidth="10"
-                      markerHeight="7"
-                      refX="9"
-                      refY="3.5"
-                      orient="auto"
-                      markerUnits="strokeWidth"
-                    >
-                      <path d="M0,0 L10,3.5 L0,7 z" fill="#000" />
-                    </marker>
-
-                    
-                    <marker
-                      id="triangle"
-                      markerWidth="12"
-                      markerHeight="12"
-                      refX="10"
-                      refY="6"
-                      orient="auto"
-                      markerUnits="strokeWidth"
-                    >
-                      <path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#000" />
-                    </marker>
-
-                    
-                    <marker
-                      id="diamond"
-                      markerWidth="12"
-                      markerHeight="12"
-                      refX="12"
-                      refY="6"
-                      orient="auto"
-                      markerUnits="strokeWidth"
-                    >
-                      <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#fff" stroke="#000" />
-                    </marker>
-
-                    
-                    <marker
-                      id="filled-diamond"
-                      markerWidth="12"
-                      markerHeight="12"
-                      refX="12"
-                      refY="6"
-                      orient="auto"
-                      markerUnits="strokeWidth"
-                    >
-                      <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#000" />
-                    </marker>
-                  </defs>
+      <div className={classes.content}>
+        <TransformWrapper
+          initialScale={1}
+          minScale={0.1}
+          maxScale={4}
+          centerOnInit={true}
+          centerZoomedOut={true}
+          limitToBounds={false}
+          doubleClick={{ disabled: true }}
+          wheel={{ disabled: isDragging }}
+          pinch={{ disabled: isDragging }}
+          panning={{ disabled: isDragging }}
+          onTransformed={({ state }) => {
+            setZoomLevel(Math.round(state.scale * 100));
+          }}
+        >
+          {({ zoomIn, zoomOut, resetTransform }) => (
+            <>
+              <div className={classes.zoomControls}>
+                <Tooltip title="Zoom In">
+                  <IconButton 
+                    className={classes.zoomButton}
+                    onClick={() => zoomIn(0.2)}
+                  >
+                    <ZoomInIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Zoom Out">
+                  <IconButton 
+                    className={classes.zoomButton}
+                    onClick={() => zoomOut(0.2)}
+                  >
+                    <ZoomOutIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Reset Zoom">
+                  <IconButton 
+                    className={classes.zoomButton}
+                    onClick={() => {
+                      resetTransform();
+                      setZoomLevel(100);
+                    }}
+                  >
+                    <RestoreIcon />
+                  </IconButton>
+                </Tooltip>
+                <span className={classes.zoomText}>
+                  {zoomLevel}%
+                </span>
+              </div>
+              <TransformComponent
+                wrapperStyle={{
+                  width: '100%',
+                  height: '100%',
+                  overflow: 'hidden'
+                }}
+                contentStyle={{
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <div className={classes.canvas}>
+                  <div className={classes.classesLayer}>
+                    {classIds.map((id) => (
+                      <ClassComponent
+                        key={id}
+                        data={classesById[id]}
+                        setIsDragging={setIsDragging}
+                        onClick={() => handleClassClick(id)}
+                      />
+                    ))}
+                  </div>
 
                   
-                  {relationships.map((rel) => (
-                    <RelationshipComponent key={rel.id} data={rel} />
-                  ))}
-                </svg>
+                  <svg
+                    className={classes.relationshipsLayer}
+                    width="3000"
+                    height="3000"
+                    overflow="visible" 
+                  >
+                    <defs>
+                      
+                      <marker
+                        id="arrow"
+                        markerWidth="10"
+                        markerHeight="7"
+                        refX="9"
+                        refY="3.5"
+                        orient="auto"
+                        markerUnits="strokeWidth"
+                      >
+                        <path d="M0,0 L10,3.5 L0,7 z" fill="#000" />
+                      </marker>
+
+                      
+                      <marker
+                        id="triangle"
+                        markerWidth="12"
+                        markerHeight="12"
+                        refX="10"
+                        refY="6"
+                        orient="auto"
+                        markerUnits="strokeWidth"
+                      >
+                        <path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#000" />
+                      </marker>
+
+                      
+                      <marker
+                        id="diamond"
+                        markerWidth="12"
+                        markerHeight="12"
+                        refX="12"
+                        refY="6"
+                        orient="auto"
+                        markerUnits="strokeWidth"
+                      >
+                        <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#fff" stroke="#000" />
+                      </marker>
+
+                      
+                      <marker
+                        id="filled-diamond"
+                        markerWidth="12"
+                        markerHeight="12"
+                        refX="12"
+                        refY="6"
+                        orient="auto"
+                        markerUnits="strokeWidth"
+                      >
+                        <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#000" />
+                      </marker>
+                    </defs>
+
+                    
+                    {relationships.map((rel) => (
+                      <RelationshipComponent key={rel.id} data={rel} />
+                    ))}
+                  </svg>
 
 
 
-              </div>
-            </TransformComponent>
-          </>
-        )}
-      </TransformWrapper>
+                </div>
+              </TransformComponent>
+            </>
+          )}
+        </TransformWrapper>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { generateCode } from '../utils/generateCode';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     backgroundColor: '#000000',
     color: '#00FF00',
     overflow: 'auto',
-    zIndex: 1000,
+    zIndex: 2000,
     border: '1px solid #333',
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
@@ -54,19 +54,15 @@ const CodeViewer = () => {
 
 
   const classes = useStyles();
-  const [code, setCode] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [language, setLanguage] = useState('Python');
 
   const classesState = useSelector((state) => state.classes);
   const relationshipsState = useSelector((state) => state.relationships);
 
-  useEffect(() => {
-
+  const code = useMemo(() => {
     const diagramData = { classes: classesState, relationships: relationshipsState };
-    const generatedCode = generateCode(diagramData, language);
-    setCode(generatedCode);
-
+    return generateCode(diagramData, language);
   }, [classesState, relationshipsState, language]);
 
   const handleDoubleClick = () => {

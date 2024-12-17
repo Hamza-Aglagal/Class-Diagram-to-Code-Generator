@@ -9,13 +9,9 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
-// Import a background image or use a URL
-// import backgroundImage from './path-to-your-background-image.jpg'; // Ensure you have an image in your project
-
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: '100vh',
-    // backgroundImage: `url(${backgroundImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     position: 'relative',
@@ -29,13 +25,13 @@ const useStyles = makeStyles((theme) => ({
       left: 0,
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for readability
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       zIndex: 1,
     },
   },
   container: {
     position: 'relative',
-    zIndex: 2, // Ensure the form is above the overlay
+    zIndex: 2,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -48,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '100%',
     maxWidth: '420px',
-    background: 'rgba(255, 255, 255, 0.85)', // Semi-transparent background
+    background: 'rgba(255, 255, 255, 0.85)',
     borderRadius: theme.shape.borderRadius,
     boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease',

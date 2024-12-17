@@ -8,33 +8,38 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   editorPage: {
-    display: 'flex',
+    position: 'relative',
     width: '100%',
-    height: '100%',
-    position: 'fixed',
-    top: 0,
-    left: 0,
+    height: '100vh',
+    overflow: 'hidden',
     margin: 0,
     padding: 0,
-    overflow: 'hidden',
   },
   sidebar: {
     width: '300px',
-    height: '100%',
-    flexShrink: 0,
-    position: 'relative',
+    height: '100vh',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    margin: 0,
+    padding: 0,
   },
   diagramEditor: {
-    flexGrow: 1,
-    height: '100%',
-    backgroundColor: '#ffffff',
     position: 'relative',
+    width: '100%',
+    height: '100vh',
     overflow: 'hidden',
+    margin: 0,
+    padding: 0,
   },
   codeViewer: {
-    width: '300px',
-    height: '100%',
-    position: 'relative',
+    position: 'fixed',
+    right: 0,
+    bottom: 0,
+    margin: 0,
+    zIndex: 10000,
+    padding: 0,
   }
 }));
 
