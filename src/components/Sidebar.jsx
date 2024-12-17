@@ -94,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
         transform: 'scale(10)',
         opacity: 0,
       },
+      boxShadow: '0 0 15px rgba(255, 255, 255, 0.5)',
     },
     '&:active': {
       transform: 'scale(0.97)',

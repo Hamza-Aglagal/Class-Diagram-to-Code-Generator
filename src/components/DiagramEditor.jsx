@@ -255,54 +255,41 @@ const DiagramEditor = () => {
                     <defs>
                       
                       <marker
-                        id="arrow"
-                        markerWidth="10"
-                        markerHeight="7"
-                        refX="9"
-                        refY="3.5"
-                        orient="auto"
-                        markerUnits="strokeWidth"
-                      >
-                        <path d="M0,0 L10,3.5 L0,7 z" fill="#000" />
-                      </marker>
-
-                      
-                      <marker
                         id="triangle"
-                        markerWidth="12"
-                        markerHeight="12"
-                        refX="10"
-                        refY="6"
+                        markerWidth="10"
+                        markerHeight="10"
+                        refX="8"
+                        refY="5"
                         orient="auto"
                         markerUnits="strokeWidth"
                       >
-                        <path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#000" />
+                        <path d="M 0 0 L 10 5 L 0 10 L 2 5 z" fill="#fff" stroke="#000" />
                       </marker>
 
                       
                       <marker
                         id="diamond"
-                        markerWidth="12"
-                        markerHeight="12"
-                        refX="12"
-                        refY="6"
+                        markerWidth="15"
+                        markerHeight="15"
+                        refX="15"
+                        refY="7.5"
                         orient="auto"
                         markerUnits="strokeWidth"
                       >
-                        <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#fff" stroke="#000" />
+                        <path d="M 0 7.5 L 7.5 0 L 15 7.5 L 7.5 15 Z" fill="#fff" stroke="#000" />
                       </marker>
 
                       
                       <marker
                         id="filled-diamond"
-                        markerWidth="12"
-                        markerHeight="12"
-                        refX="12"
-                        refY="6"
+                        markerWidth="15"
+                        markerHeight="15"
+                        refX="15"
+                        refY="7.5"
                         orient="auto"
                         markerUnits="strokeWidth"
                       >
-                        <path d="M0,6 L6,0 L12,6 L6,12 z" fill="#000" />
+                        <path d="M 0 7.5 L 7.5 0 L 15 7.5 L 7.5 15 Z" fill="#000" />
                       </marker>
                     </defs>
 
