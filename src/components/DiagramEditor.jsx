@@ -109,8 +109,9 @@ const DiagramEditor = () => {
   const diagramRef = useRef(null);
 
   useEffect(() => {
+    
     dispatch(setDiagramRef(diagramRef));
-  }, [diagramRef, dispatch]);
+  }, [dispatch]);
 
   const handleBackgroundClick = () => {
     dispatch(setSelectedElement(null));
@@ -126,12 +127,14 @@ const DiagramEditor = () => {
   const handleClassClick = (classId) => {
     if (mode === 'addingRelationship') {
       if (!relationshipStartClassId) {
-        
         setRelationshipStartClassId(classId);
       } else {
+        const defaultSourceCardinality = '1';
+        const defaultTargetCardinality = '*';
         
-        const sourceCardinality = prompt('Enter source cardinality:', '1');
-        const targetCardinality = prompt('Enter target cardinality:', '*');
+        const sourceCardinality = prompt('Enter source cardinality:', defaultSourceCardinality) || defaultSourceCardinality;
+        const targetCardinality = prompt('Enter target cardinality:', defaultTargetCardinality) || defaultTargetCardinality;
+        
         dispatch(
           addRelationship(
             relationshipStartClassId,
@@ -146,7 +149,6 @@ const DiagramEditor = () => {
         setRelationshipStartClassId(null);
       }
     } else {
-
       dispatch(setSelectedElement(classId));
     }
   };
