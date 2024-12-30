@@ -27,6 +27,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CodeIcon from '@mui/icons-material/Code';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SessionInfo from './SessionInfo';
+import { exportDiagramAction, importDiagramAction } from '../redux/actions/diagramActions';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -178,6 +179,7 @@ const Sidebar = () => {
   const mode = useSelector((state) => state.ui.mode);
   const selectedElementId = useSelector((state) => state.ui.selectedElementId);
   const classesState = useSelector((state) => state.classes);
+  const relationships = useSelector(state => state.relationships);
 
   const relationshipTypes = ['Association', 'Inheritance', 'Aggregation', 'Composition'];
 
@@ -200,11 +202,11 @@ const Sidebar = () => {
   };
 
   const handleExport = () => {
-    // Implement export functionality
+    exportDiagramAction(classesState, relationships);
   };
 
-  const handleImport = (event) => {
-    // Implement import functionality
+  const handleImport = () => {
+    dispatch(importDiagramAction());
   };
 
   const handleGenerateCode = () => {
